@@ -1,39 +1,45 @@
 import emailjs from "@emailjs/browser"
 import { FormEvent, useState } from "react"
+import ServiceDropdown from "../components/ServiceDropdown"
 import styles from "./CtaFinal.module.css"
 
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID
-const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-const EMAIL = "contactojodev@gmail.com"
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID as string
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string
+
+type Status = "idle" | "sending" | "success" | "error"
 
 export default function CtaFinal() {
   const INSTAGRAM = "https://www.instagram.com/jjd.ev/?hl=es"
+
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [name, setName] = useState("")
   const [senderEmail, setSenderEmail] = useState("")
+  const [service, setService] = useState("")
   const [message, setMessage] = useState("")
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle")
+  const [status, setStatus] = useState<Status>("idle")
 
-  const fallbackMailto = () => {
-    const subject = encodeURIComponent("Nuevo proyecto desde portfolio")
-    const body = encodeURIComponent(
-      `Nombre: ${name}\nEmail: ${senderEmail}\n\nProyecto:\n${message}`,
-    )
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
 
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`
+  const isFormValid =
+    name.trim().length > 0 &&
+    service.trim().length > 0 &&
+    message.trim().length > 0 &&
+    isValidEmail(senderEmail)
+
+  const emailIsInvalid =
+    senderEmail.trim().length > 0 && !isValidEmail(senderEmail)
+
+  const resetForm = () => {
+    setName("")
+    setSenderEmail("")
+    setService("")
+    setMessage("")
   }
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
-      fallbackMailto()
-      return
-    }
-
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setStatus("sending")
 
     try {
@@ -43,18 +49,16 @@ export default function CtaFinal() {
         {
           from_name: name,
           from_email: senderEmail,
+          service,
           message,
           reply_to: senderEmail,
         },
         PUBLIC_KEY,
       )
-
       setStatus("success")
-      setName("")
-      setSenderEmail("")
-      setMessage("")
-    } catch (error) {
-      console.error("EmailJS error:", error)
+      resetForm()
+    } catch (err) {
+      console.error("EmailJS error:", err)
       setStatus("error")
     }
   }
@@ -92,64 +96,96 @@ export default function CtaFinal() {
           <button
             type="button"
             className={styles.btnPrimary}
-            onClick={() => setIsFormOpen((current) => !current)}
+            onClick={() => {
+              setIsFormOpen((c) => !c)
+              setStatus("idle")
+            }}
           >
             {isFormOpen ? "Cerrar formulario" : "Enviar email →"}
           </button>
         </div>
 
         {isFormOpen && (
-          <form className={styles.contactForm} onSubmit={handleSubmit}>
+          <form
+            className={styles.contactForm}
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <div className={styles.row}>
+              <label className={styles.field}>
+                <span className={styles.label}>Nombre</span>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Tu nombre"
+                  required
+                  disabled={status === "sending"}
+                />
+              </label>
+
+              <label className={styles.field}>
+                <span className={styles.label}>Correo electrónico</span>
+                <input
+                  type="email"
+                  value={senderEmail}
+                  onChange={(e) => setSenderEmail(e.target.value)}
+                  placeholder="tu@correo.com"
+                  aria-invalid={emailIsInvalid}
+                  required
+                  disabled={status === "sending"}
+                />
+                {emailIsInvalid && (
+                  <p className={styles.fieldError}>
+                    Ingresa un correo válido antes de enviar.
+                  </p>
+                )}
+              </label>
+            </div>
+
             <label className={styles.field}>
-              Nombre
-              <input
-                type="text"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                placeholder="Tu nombre"
-                required
+              <span className={styles.label}>Servicio de interés</span>
+              <ServiceDropdown
+                value={service}
+                onChange={setService}
+                disabled={status === "sending"}
               />
             </label>
 
             <label className={styles.field}>
-              Correo electrónico
-              <input
-                type="email"
-                value={senderEmail}
-                onChange={(event) => setSenderEmail(event.target.value)}
-                placeholder="tunombre@ejemplo.com"
-                required
-              />
-            </label>
-
-            <label className={styles.field}>
-              Cuéntame del proyecto
+              <span className={styles.label}>Cuéntame del proyecto</span>
               <textarea
                 value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                placeholder="Describe tu idea o necesidad"
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Describe tu idea, qué necesitás y cuándo lo necesitás..."
                 rows={5}
                 required
+                disabled={status === "sending"}
               />
             </label>
 
             <button
               type="submit"
-              className={styles.btnPrimary}
-              disabled={status === "sending"}
+              className={styles.btnSubmit}
+              disabled={status === "sending" || !isFormValid}
             >
-              {status === "sending" ? "Enviando..." : "Enviar mensaje →"}
+              {status === "sending" ? (
+                <>
+                  <span className={styles.spinner} /> Enviando...
+                </>
+              ) : (
+                "Enviar mensaje →"
+              )}
             </button>
 
             {status === "success" && (
-              <p className={styles.statusMessage} aria-live="polite">
-                Mensaje enviado correctamente. Te contacto en breve.
+              <p className={styles.statusOk} aria-live="polite">
+                ✓ Mensaje enviado. Te contacto en menos de 48 horas.
               </p>
             )}
             {status === "error" && (
-              <p className={styles.statusMessageError} aria-live="polite">
-                Ocurrió un error al enviar. Intenta de nuevo o escríbeme
-                directo.
+              <p className={styles.statusErr} aria-live="polite">
+                Ocurrió un error al enviar. Intentá de nuevo.
               </p>
             )}
           </form>
