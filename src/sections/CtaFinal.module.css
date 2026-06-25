@@ -1,0 +1,185 @@
+.section {
+  padding: 6rem 2.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.box {
+  background: var(--glass);
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-xl);
+  padding: 4.5rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.redGlow {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(211, 47, 47, 0.14), transparent 55%);
+  border-radius: var(--radius-xl);
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--red-dim);
+  border: 0.5px solid rgba(211, 47, 47, 0.3);
+  border-radius: 100px;
+  padding: 0.35rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--red-bright);
+  margin-bottom: 1.8rem;
+  letter-spacing: 0.07em;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 1.1rem;
+}
+
+.accent {
+  color: var(--red);
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: 2.2rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.contactForm {
+  display: grid;
+  gap: 1rem;
+  max-width: 680px;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+}
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white);
+  outline: none;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.statusMessage,
+.statusMessageError {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.statusMessage {
+  color: #a7f3d0;
+}
+
+.statusMessageError {
+  color: #fca5a5;
+}
+
+.btnPrimary {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--white);
+  padding: 0.9rem 2rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition:
+    background var(--transition-base),
+    transform var(--transition-smooth),
+    box-shadow var(--transition-smooth);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btnPrimary:hover {
+  background: var(--red-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--red-glow);
+}
+
+.btnSecondary {
+  background: var(--glass);
+  border: 0.5px solid var(--glass-border);
+  color: var(--white);
+  padding: 0.9rem 2rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.92rem;
+  transition:
+    background var(--transition-base),
+    transform var(--transition-smooth);
+  backdrop-filter: blur(10px);
+}
+
+.btnSecondary:hover {
+  background: var(--glass-hover);
+  transform: translateY(-2px);
+}
+
+.hint {
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 4rem 1.25rem;
+  }
+  .box {
+    padding: 3rem 1.5rem;
+  }
+}

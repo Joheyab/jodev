@@ -1,0 +1,26 @@
+.card {
+  background: var(--glass);
+  border: 0.5px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition:
+    border-color var(--transition-smooth),
+    transform var(--transition-smooth),
+    background var(--transition-smooth);
+}
+
+.card:hover {
+  border-color: rgba(211, 47, 47, 0.35);
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.featured {
+  border-color: rgba(211, 47, 47, 0.45);
+  background: var(--glass-red);
+}
+
+.featured:hover {
+  border-color: rgba(211, 47, 47, 0.65);
+}
