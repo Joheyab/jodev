@@ -18,6 +18,7 @@ export default function CtaFinal() {
   const [service, setService] = useState("")
   const [message, setMessage] = useState("")
   const [status, setStatus] = useState<Status>("idle")
+  const [honeypot, setHoneypot] = useState("")
 
   const isValidEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
@@ -40,8 +41,8 @@ export default function CtaFinal() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (honeypot) return
     setStatus("sending")
-
     try {
       await emailjs.send(
         SERVICE_ID,
@@ -161,6 +162,24 @@ export default function CtaFinal() {
                 rows={5}
                 required
                 disabled={status === "sending"}
+              />
+            </label>
+            <label
+              style={{
+                position: "absolute",
+                left: "-9999px",
+                opacity: 0,
+                pointerEvents: "none",
+              }}
+              aria-hidden="true"
+            >
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
               />
             </label>
 
