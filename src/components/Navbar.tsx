@@ -5,6 +5,7 @@ const NAV_LINKS = [
   { label: 'Servicios', href: '#services' },
   { label: 'Proceso',   href: '#process'  },
   { label: 'Stack',     href: '#stack'    },
+  { label: 'Proyectos', href: '#projects' },
   { label: 'Planes',    href: '#pricing'  },
 ]
 
